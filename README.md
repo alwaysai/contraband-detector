@@ -1,5 +1,5 @@
 # Contraband Detector App
-This app using object detection and a correlation tracker to monitor a frame for items deemed 'contraband'. For working or learning at home, these items may be headphones, cell phones, books, etc. We use two object detection models, to maximize the number of objects we can detect given a set of freely available detection models. You can add or remove models and alter labels to suit your needs!
+This app uses object detection and employs a correlation tracker to monitor a frame for items deemed 'contraband'. For working or learning at home, these items may be headphones, cell phones, books, etc. We use two object detection models in order to maximize the number of objects we can detect given a set of freely available detection models. You can add or remove models and alter labels to suit your needs!
 
 ## Requirements
 To run this app, you will need an alwaysAI account. Please register at https://alwaysai.co/auth?register=true
