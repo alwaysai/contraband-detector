@@ -1,6 +1,9 @@
 import time
+
 import edgeiq
 from contraband_summary import ContrabandSummary
+import cv2
+
 """
 Detect items that are considered contraband for working or learning from home,
 namely cell phones, headphones, books, etc.
@@ -53,11 +56,13 @@ def main():
     fps = edgeiq.FPS()
     contraband_summary = ContrabandSummary()
 
-    new_contraband_detections = []
 
     def handle_detected_contraband(object_id, prediction):
         print('Detected {}!'.format(prediction.label))
-        new_contraband_detections.append(prediction)
+        contraband_summary.update_contraband(prediction.label)
+        cv2.imwrite("{}_{}.jpeg".format(prediction.label, \
+            time.strftime('%Y-%m-%d %Hh_%Mm_%Ss', time.localtime())), \
+                contraband_summary.get_image())
 
     tracker = edgeiq.CorrelationTracker(
             max_objects=5,
@@ -65,7 +70,7 @@ def main():
             enter_cb=handle_detected_contraband)
 
     try:
-        with edgeiq.WebcamVideoStream(cam=2) as video_stream, \
+        with edgeiq.WebcamVideoStream(cam=0) as video_stream, \
                 edgeiq.Streamer() as streamer:
 
             # Allow Webcam to warm up
@@ -75,6 +80,7 @@ def main():
             # loop detection
             while True:
                 frame = video_stream.read()
+                contraband_summary.update_image(frame)
                 predictions = []
 
                 # gather data from the all the detectors
@@ -87,12 +93,7 @@ def main():
                     # append each prediction
                     predictions.extend(filtered_predictions)
 
-                # Clear list of new detections
-                new_contraband_detections = []
                 tracked_contraband = tracker.update(predictions, frame)
-                for c in new_contraband_detections:
-                    contraband_summary.contraband_alert(c.label, frame)
-
                 tracked_predictions = [prediction for (object_id, prediction) in tracked_contraband.items()]
 
                 # mark up the frame with the predictions for the contraband objects
@@ -111,6 +112,7 @@ def main():
 
     finally:
         fps.stop()
+        print("Contraband Summary:\n{}".format(contraband_summary.get_summary()))
         print("elapsed time: {:.2f}".format(fps.get_elapsed_seconds()))
         print("approx. FPS: {:.2f}".format(fps.compute_fps()))
         print("Program Ending")

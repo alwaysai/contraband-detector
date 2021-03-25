@@ -9,24 +9,29 @@ time they occurred, and the video frame of the incident.
 class ContrabandSummary:
     def __init__(self):
         self.contraband_detections = []
+        self.current_image = None
 
-    def contraband_alert(self, contraband, frame):
+    def update_contraband(self, contraband):
+        detect_time = time.localtime()
+        self.contraband_detections.append((contraband, detect_time))
+        
+    def get_summary(self):
         """
-        Prints the detection to the console. Input frame can be saved to disk.
+        Prints the detection to the console.
 
         Parameters
         -------
         contraband : string
             The label of the detected object
-
-        frame: []
-            A numpy array of the moment the contraband was detected
         """
-        detect_time = time.localtime()
-        self.contraband_detections.append((contraband, detect_time, frame))
         items = self.get_contraband_string()
-        
         print(*items)
+
+    def update_image(self, frame):
+        self.current_image = frame
+
+    def get_image(self):
+        return self.current_image
 
     def get_contraband_string(self):
         """
@@ -38,7 +43,7 @@ class ContrabandSummary:
             A list of text describing all of the detected contraband and the time of detection
         """
         contraband_string = [""]
-        for contraband, detect_time, frame in self.contraband_detections:
+        for contraband, detect_time in self.contraband_detections:
             string_time = time.strftime('%Y-%m-%d %H:%M:%S', detect_time)
             contraband_string.append(contraband + " detected at " + string_time + "\n")
         return contraband_string
