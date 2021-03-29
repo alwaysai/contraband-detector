@@ -2,7 +2,6 @@ import time
 
 import edgeiq
 from contraband_summary import ContrabandSummary
-import cv2
 
 """
 Detect items that are considered contraband for working or learning from home,
@@ -60,9 +59,6 @@ def main():
     def handle_detected_contraband(object_id, prediction):
         print('Detected {}!'.format(prediction.label))
         contraband_summary.update_contraband(prediction.label)
-        cv2.imwrite("{}_{}.jpeg".format(prediction.label, \
-            time.strftime('%Y-%m-%d %Hh_%Mm_%Ss', time.localtime())), \
-                contraband_summary.get_image())
 
     tracker = edgeiq.CorrelationTracker(
             max_objects=5,

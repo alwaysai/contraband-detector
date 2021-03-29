@@ -1,4 +1,7 @@
 import time
+
+import cv2
+
 """
 Tracks all occurrences of contraband detections. Stores tuples of
 (detection, time, frame) in a list, contraband_detections, that
@@ -12,8 +15,17 @@ class ContrabandSummary:
         self.current_image = None
 
     def update_contraband(self, contraband):
+        """Logs the contraband detected and writes out 
+        a snapshot image of the event.
+
+        Args:
+            contraband (string): The label of the contraband object.
+        """
         detect_time = time.localtime()
         self.contraband_detections.append((contraband, detect_time))
+        cv2.imwrite("{}_{}.jpeg".format(contraband, \
+            time.strftime('%Y-%m-%d %Hh_%Mm_%Ss', time.localtime())), \
+                self.get_image())
         
     def get_summary(self):
         """
