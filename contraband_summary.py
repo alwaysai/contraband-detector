@@ -1,5 +1,4 @@
 import time
-
 import cv2
 
 """
@@ -9,13 +8,14 @@ can be accessed to produce a log of contraband detections, the
 time they occurred, and the video frame of the incident.
 """
 
+
 class ContrabandSummary:
     def __init__(self):
         self.contraband_detections = []
         self.current_image = None
 
     def update_contraband(self, contraband):
-        """Logs the contraband detected and writes out 
+        """Logs the contraband detected and writes out
         a snapshot image of the event.
 
         Args:
@@ -23,10 +23,12 @@ class ContrabandSummary:
         """
         detect_time = time.localtime()
         self.contraband_detections.append((contraband, detect_time))
-        cv2.imwrite("{}_{}.jpeg".format(contraband, \
-            time.strftime('%Y-%m-%d %Hh_%Mm_%Ss', time.localtime())), \
+        cv2.imwrite(
+                "{}_{}.jpeg".format(
+                    contraband,
+                    time.strftime('%Y-%m-%d %Hh_%Mm_%Ss', time.localtime())),
                 self.get_image())
-        
+
     def get_summary(self):
         """
         Prints the detection to the console.

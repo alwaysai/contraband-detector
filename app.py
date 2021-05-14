@@ -55,7 +55,6 @@ def main():
     fps = edgeiq.FPS()
     contraband_summary = ContrabandSummary()
 
-
     def handle_detected_contraband(object_id, prediction):
         print('Detected {}!'.format(prediction.label))
         contraband_summary.update_contraband(prediction.label)
